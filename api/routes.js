@@ -6,6 +6,8 @@ const cors = require('cors');
 //Routes
 // const userRoutes = require('./routes/userRoutes')
 const authenticationRoutes = require('./routes/authenticationRoutes')
+const semesterRoutes = require('./routes/semesterRoutes');
+const userRoutes = require('./routes/userRoutes')
 // const forgetPasswordRoutes = require('./routes/forgetPasswordRoutes')
 
 app.use(cors({
@@ -33,6 +35,8 @@ app.use(cors({
 }));
 
 app.use(express.json());
-app.use('/',authenticationRoutes); 
+app.use('/',authenticationRoutes);
+app.use('/semesters', semesterRoutes);
+app.use('/user', userRoutes);
 
 module.exports = app;
