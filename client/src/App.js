@@ -3,14 +3,18 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Home from './pages/Home';
 import UserLogin from './pages/Login';
 import UserRegister from './pages/Register';
+import Course from './pages/Course';
 
 const App = () => {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Home />} />
+        {/*login and registration */}
         <Route path="/login" element={<UserLogin />} />
         <Route path="/register" element={<UserRegister />} />
+
+        <Route path="/" element={<Home />} />
+        <Route path='/course' element={<Course/>}/>
       </Routes>
     </Router>
   );
