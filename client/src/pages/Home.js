@@ -92,7 +92,6 @@ const Home = () => {
         setTimeout(() => {
           setIsLoading(false);
         }, 1500);
-        alert("Added Successfully!");
         fetchSemesters();
       } else {
         setTimeout(() => {
