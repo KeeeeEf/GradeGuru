@@ -13,7 +13,7 @@ const CourseList = ({ semesterId }) => {
     const fetchCourses = async () => {
       setIsLoading(true);
       try {
-        const response = await axios.get(`${config.API}/courses/getCoursesBySemester?semesterId=${semesterId}`);
+        const response = await axios.get(`${config.API}/courses/getCourseBySemester?semesterId=${semesterId}`);
         setCourses(response.data.data);
       } catch (err) {
         setError('Error fetching courses');
