@@ -1,27 +1,51 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Dropdown from './Dropdown';
+import config from '../common/config';
+import axios from 'axios';
 
 const Table = (props) => {
+  const data = props.data || [];
+
   const [isEditing, setIsEditing] = useState(false);
-  const [data, setData] = useState([
-    { activity: 'Activity 1', type: 'Type 1', score: 10, total: 20 },
-    { activity: 'Activity 2', type: 'Type 2', score: 15, total: 30 },
-    // Add more data as needed
-  ]);
+  const [editedData, setEditedData] = useState([]); // Use a separate state to store edited data
+
+  useEffect(() => {
+    setEditedData([...props.data]);
+  }, [props.data]);
 
   const handleEdit = () => {
     setIsEditing(!isEditing);
+
+    if(isEditing){
+      handleUpdate()
+    }
   };
 
-  const handleInputChange = (index, key, value) => {
-    const newData = [...data];
-    newData[index][key] = value;
-    setData(newData);
+  const handleUpdate = () => {
+    // Update the backend with editedData
+    axios.post(`${config.API}/activity/editactivity`, editedData)
+      .then((res) => {
+        if (res.data.success === true) {
+          alert("Updated Successfully!");
+        } else {
+          alert("Error updating data");
+        }
+      });
+  };
+
+  const handleInputChange = (index, field, value) => {
+    // Update the editedData state when an input field changes
+
+    const newData = [...editedData];
+    newData[index][field] = value;
+    setEditedData(newData);
   };
 
   return (
     <div className="w-full">
-      <button onClick={handleEdit} className='float-right'>{isEditing ? 'Save Grade' : 'Edit Grade'}</button>
+      <button onClick={handleEdit} className='float-right'>
+        {isEditing ? 'Save Grade' : 'Edit Grade'}
+      </button>
       <table className="w-full border-collapse border">
         <thead>
           <tr>
@@ -46,8 +70,14 @@ const Table = (props) => {
                 )}
               </td>
               <td className="border p-2">
+
                 {isEditing ? (
-                  <Dropdown title={"Type"} options={props.options}/>
+                  <Dropdown
+                    title={"Type"}
+                    options={props.options}
+                    select={item.type}
+                    onSelect={(value) => handleInputChange(index, 'type', value)}
+                  />
                 ) : (
                   item.type
                 )}

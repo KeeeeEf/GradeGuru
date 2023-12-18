@@ -1,28 +1,40 @@
-import react from 'react'
+import React, { useEffect, useState } from 'react';
 
-const Dropdown = (props) =>{
+const Dropdown = (props) => {
+  const [selectedValue, setSelectedValue] = useState('');
 
-    console.log(props.options)
-
-    function renderData(data, index){
-        return(
-            <option value={index}>{data.type}</option>
-        )
+  useEffect(() => {
+    // Set the selected value when the component mounts
+    if (props.select) {
+      setSelectedValue(props.select);
     }
+  }, [props.select]);
 
-    return(
-        <div>
-          <select
-            // value={semesterName}
-            // onChange={(e) => setSemesterName(e.target.value)}
-            className={props.className}>
-            <option value="" disabled selected>
-                Select {props.title}
-             </option>
-             {props.options.map((data)=>renderData(data))}  
-          </select>
-        </div>
-    )
-}
+  const handleSelectChange = (e) => {
+    console.log(e.target.value)
+    const changedvalue = e.target.value;
+    props.onSelect(changedvalue);
+  };
 
-export default Dropdown
+  return (
+    <div>
+      <select
+        className={props.className}
+        style={{ width: '150px' }}
+        value={props.select}
+        onChange={handleSelectChange}
+      >
+        <option value="" disabled>
+          Select {props.title}
+        </option>
+        {props.options.map((data, index) => (
+          <option key={index} value={data}>
+            {data}
+          </option>
+        ))}
+      </select>
+    </div>
+  );
+};
+
+export default Dropdown;
