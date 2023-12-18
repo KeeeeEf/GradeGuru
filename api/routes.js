@@ -10,6 +10,7 @@ const semesterRoutes = require('./routes/semesterRoutes');
 const criteriaRoutes = require('./routes/criteriaRoutes');
 const activityRoutes = require('./routes/activityRoutes');
 const userRoutes = require('./routes/userRoutes')
+const courseRoutes = require('./routes/courseRoutes')
 // const forgetPasswordRoutes = require('./routes/forgetPasswordRoutes')
 
 app.use(cors({
@@ -42,5 +43,6 @@ app.use('/semesters', semesterRoutes);
 app.use('/criteria', criteriaRoutes);
 app.use('/activity', activityRoutes);
 app.use('/user', userRoutes);
+app.use('/courses', courseRoutes);
 
 module.exports = app;

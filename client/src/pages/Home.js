@@ -5,6 +5,7 @@ import Modal from 'react-modal';
 import Navbar from '../components/Navbar';
 import config from '../common/config';
 import axios from 'axios';
+import YearAccordion from '../components/YearAccordion';
 
 const Home = () => {
   const [semesters, setSemesters] = useState([]);
@@ -36,6 +37,18 @@ const Home = () => {
       <Link to={`/semester/${semester.sem_id}`} key={semester.sem_id}>
         <SemesterCard semester={semester} />
       </Link>
+    ));
+  };
+
+  const renderYearAccordions = () => {
+    const uniqueYears = Array.from(new Set(semesters.map((semester) => semester.year)));
+  
+    return uniqueYears.map((year) => (
+      <YearAccordion
+        key={year}
+        year={year}
+        semesters={semesters.filter((semester) => semester.year === year)}
+      />
     ));
   };
 
@@ -79,7 +92,6 @@ const Home = () => {
         setTimeout(() => {
           setIsLoading(false);
         }, 1500);
-        alert("Added Successfully!");
         fetchSemesters();
       } else {
         setTimeout(() => {
@@ -102,8 +114,9 @@ const Home = () => {
         <h1 className="text-3xl font-bold text-center mb-8">GradeGuru</h1>
         <h2 className="text-2xl text-center font-semibold mb-4">Semesters</h2>
         <h2 className="text-xl text-center mb-4">Click on a semester to view your grades!</h2>
+        {renderYearAccordions()}
         <div className="grid grid-cols-1 gap-4 w-1/3">
-          {renderSemesters()}
+          
         </div>
         <button
           onClick={openAddSemesterModal}
@@ -111,6 +124,7 @@ const Home = () => {
         >
           Add Semester
         </button>
+        
         <Modal
           isOpen={isAddSemesterModalOpen}
           onRequestClose={closeAddSemesterModal}
