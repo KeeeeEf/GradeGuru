@@ -42,8 +42,8 @@ const Home = () => {
 
   const renderYearAccordions = () => {
     const uniqueYears = Array.from(new Set(semesters.map((semester) => semester.year)));
-  
-    return uniqueYears.map((year) => (
+    const sortedYears = uniqueYears.sort((a, b) => a - b);
+    return sortedYears.map((year) => (
       <YearAccordion
         key={year}
         year={year}
@@ -74,10 +74,6 @@ const Home = () => {
   
     if (isDuplicate) {
       setError("Semester with the same name and year already exists.");
-      return;
-    }
-    if (!account_id) {
-      setError("Unable to get the account_id of the logged-in user.");
       return;
     }
 
