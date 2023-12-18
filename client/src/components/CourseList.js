@@ -3,8 +3,9 @@ import React, { useEffect, useState } from 'react';
 import CourseCard from './CourseCard';
 import axios from 'axios';
 import config from '../common/config';
+import { Link } from 'react-router-dom';
 
-const CourseList = ({ semesterId }) => {
+const CourseList = ({ semesterId, onCourseAdded }) => {
   const [courses, setCourses] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
@@ -23,7 +24,7 @@ const CourseList = ({ semesterId }) => {
     };
 
     fetchCourses();
-  }, [semesterId]);
+  }, [onCourseAdded]);
 
   if (isLoading) {
     return <p>Loading courses...</p>;
@@ -36,7 +37,9 @@ const CourseList = ({ semesterId }) => {
   return (
     <div className="grid grid-cols-1 gap-4 w-full">
       {courses.map((course) => (
-        <CourseCard key={course.course_id} course={course} />
+        <Link to={`/course/${course.course_id}`} key={course.course_id}>
+          <CourseCard key={course.course_id} course={course} />
+        </Link>
       ))}
     </div>
   );

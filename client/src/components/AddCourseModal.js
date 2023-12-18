@@ -3,7 +3,7 @@ import Modal from 'react-modal';
 import axios from 'axios';
 import config from '../common/config';
 
-const AddCourseModal = ({ isOpen, onClose, semesterId }) => {
+const AddCourseModal = ({ isOpen, onClose, semesterId, onCourseAdded }) => {
   const [courseName, setCourseName] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
@@ -25,7 +25,7 @@ const AddCourseModal = ({ isOpen, onClose, semesterId }) => {
 
   useEffect(() => {
     fetchCourses();
-  }, [semesterId]);
+  }, [semesterId, onCourseAdded]);
 
   const handleAddCourse = async () => {
     if (!courseName) {
@@ -47,7 +47,8 @@ const AddCourseModal = ({ isOpen, onClose, semesterId }) => {
         // Optionally, you can update the courses list for the current semester
         // This is useful if you want to immediately reflect the changes without refreshing the page
         fetchCourses();
-
+        onCourseAdded();
+        setCourseName("");
         // Close the modal
         onClose();
       } else {
@@ -62,6 +63,10 @@ const AddCourseModal = ({ isOpen, onClose, semesterId }) => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const resetForm = () => {
+    setCourseName('');
   };
 
   return (
@@ -91,7 +96,10 @@ const AddCourseModal = ({ isOpen, onClose, semesterId }) => {
           Save
         </button>
         <button
-          onClick={onClose}
+          onClick={() => {
+            resetForm();
+            onClose();
+          }}
           className="bg-gray-500 text-white py-2 px-4 rounded"
         >
           Cancel
