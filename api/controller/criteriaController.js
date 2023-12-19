@@ -1,9 +1,26 @@
 
 const db = require('./a_db');
 
-const addCriteria = (req,res) =>{
- console.log('hello')
-}
+const addCriteria = async (req, res) => {
+    const { course_id, types } = req.body;
+  
+    try {
+      const insertPromises = types.map(async (type) => {
+        const { type: criteriaType, percentage } = type;
+        await db.query(
+          'INSERT INTO criteria (course_id, type, percentage) VALUES (?, ?, ?)',
+          [course_id, criteriaType, percentage]
+        );
+      });
+  
+      await Promise.all(insertPromises);
+  
+      res.json({ success: true, message: 'Criteria added successfully.' });
+    } catch (error) {
+      console.error('Error adding criteria:', error);
+      res.status(500).json({ success: false, message: 'Error adding criteria.' });
+    }
+  };
 
 const getCriteria = (req,res) =>{
     try{
