@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import SemesterCard from '../components/SemesterCard';
 import Modal from 'react-modal';
 import Navbar from '../components/Navbar';
 import config from '../common/config';
@@ -32,14 +30,6 @@ const Home = () => {
     }
   };
 
-  const renderSemesters = () => {
-    return semesters.map((semester) => (
-      <Link to={`/semester/${semester.sem_id}`} key={semester.sem_id}>
-        <SemesterCard semester={semester} />
-      </Link>
-    ));
-  };
-
   const renderYearAccordions = () => {
     const uniqueYears = Array.from(new Set(semesters.map((semester) => semester.year)));
     const sortedYears = uniqueYears.sort((a, b) => a - b);
@@ -60,6 +50,7 @@ const Home = () => {
     setAddSemesterModalOpen(false);
     setSemesterName("");
     setYear("");
+    setError("")
   };
 
   const handleAddSemester = async () => {
