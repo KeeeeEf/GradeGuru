@@ -114,7 +114,7 @@ const Course = () =>{
     
     function renderCriteria(datum, index) {
         return (
-          <div key={index} className='flex justify-between items-center gap-[10px]'>
+          <div key={index} className='flex justify-between items-center gap-[10px]'> 
             <h1>{datum.type}</h1>
             <div className='w-[100%] h-[2px] bg-black' />
             <h1>{datum.percentage}%</h1>

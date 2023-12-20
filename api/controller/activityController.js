@@ -73,7 +73,7 @@ const addActivity = (req, res) => {
 
 const getActivity = (req, res) => {
     try {
-      const { course_id, term } = req.query;
+      const { course_id, term } = req.query; 
   
       // Joining the activity table with the criteria table on the type_id and course_id
       const activity_type_sql = `
