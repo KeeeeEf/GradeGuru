@@ -116,7 +116,11 @@ const AddCourseModal = ({ isOpen, onClose, semesterId, onCourseAdded }) => {
           onChange={(e) => setCourseName(e.target.value)}
           className="border rounded p-2 mb-4 w-full"
         />
+        <label htmlFor="currentType" className=" text-sm font-medium text-gray-600">
+          Activity
+        </label>
         <div className="flex mb-4">
+        
           <input
             type="text"
             placeholder="Type"
