@@ -5,6 +5,5 @@ CREATE TABLE `criteria` (
   `percentage` decimal(5,2) NOT NULL,
   PRIMARY KEY (`criteria_id`),
   KEY `course_id` (`course_id`),
-  CONSTRAINT `course_idfk_1` FOREIGN KEY (`course_id`) REFERENCES `courses` (`course_id`)
-  
+  CONSTRAINT `course_idfk_1` FOREIGN KEY (`course_id`) REFERENCES `courses` (`course_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
