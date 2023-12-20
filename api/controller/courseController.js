@@ -86,4 +86,58 @@ const addCourseBySemester = (req, res) => {
     }
   };
 
-module.exports = { getCourseBySemester, addCourseBySemester };
+  const deleteCourse = (req, res) => {
+    try {
+      const { courseId } = req.params;
+  
+      // Check if the course exists
+      const checkCourseSQL = 'SELECT * FROM courses WHERE course_id = ?';
+      const checkValues = [courseId];
+  
+      db.query(checkCourseSQL, checkValues, (checkErr, checkResults) => {
+        if (checkErr) {
+          console.error('Error checking course existence:', checkErr);
+          return res.status(500).json({
+            success: false,
+            message: 'Internal Server Error',
+          });
+        }
+  
+        if (checkResults.length === 0) {
+          // Course not found
+          return res.status(404).json({
+            success: false,
+            message: 'Course not found.',
+          });
+        }
+  
+        // If the course exists, proceed with deletion
+        const deleteSQL = 'DELETE FROM courses WHERE course_id = ?';
+        const deleteValues = [courseId];
+  
+        db.query(deleteSQL, deleteValues, (deleteErr, result) => {
+          if (deleteErr) {
+            console.error('Error deleting course:', deleteErr);
+            return res.status(500).json({
+              success: false,
+              message: 'Internal Server Error',
+            });
+          }
+  
+          res.status(200).json({
+            success: true,
+            message: 'Course deleted successfully',
+            data: result,
+          });
+        });
+      });
+    } catch (error) {
+      console.error('Error deleting course:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Internal Server Error',
+      });
+    }
+  };
+
+module.exports = { getCourseBySemester, addCourseBySemester, deleteCourse };

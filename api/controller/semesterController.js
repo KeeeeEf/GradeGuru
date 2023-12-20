@@ -87,4 +87,58 @@ const getSemester = (req, res) => {
     }
   };
   
-  module.exports = { addSemester, getSemester };
+  const deleteSemester = (req, res) => {
+    try {
+      const { semesterId } = req.params;
+  
+      // Check if the semester exists
+      const checkSemesterSQL = 'SELECT * FROM semester WHERE sem_id = ?';
+      const checkValues = [semesterId];
+  
+      db.query(checkSemesterSQL, checkValues, (checkErr, checkResults) => {
+        if (checkErr) {
+          console.error('Error checking semester existence:', checkErr);
+          return res.status(500).json({
+            success: false,
+            message: 'Internal Server Error',
+          });
+        }
+  
+        if (checkResults.length === 0) {
+          // Semester not found
+          return res.status(404).json({
+            success: false,
+            message: 'Semester not found.',
+          });
+        }
+  
+        // If the semester exists, proceed with deletion
+        const deleteSQL = 'DELETE FROM semester WHERE sem_id = ?';
+        const deleteValues = [semesterId];
+  
+        db.query(deleteSQL, deleteValues, (deleteErr, result) => {
+          if (deleteErr) {
+            console.error('Error deleting semester:', deleteErr);
+            return res.status(500).json({
+              success: false,
+              message: 'Internal Server Error',
+            });
+          }
+  
+          res.status(200).json({
+            success: true,
+            message: 'Semester deleted successfully',
+            data: result,
+          });
+        });
+      });
+    } catch (error) {
+      console.error('Error deleting semester:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Internal Server Error',
+      });
+    }
+  };
+  
+  module.exports = { addSemester, getSemester, deleteSemester };
