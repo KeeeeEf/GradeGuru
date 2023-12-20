@@ -2,6 +2,7 @@ CREATE TABLE `activity` (
   `activity_id` bigint(20) NOT NULL AUTO_INCREMENT,
   `course_id` bigint(20) NOT NULL,
   `criteria_id` bigint(20) NOT NULL,
+  `term` varchar(255),
   `activity` varchar(255),
   `total` int NOT NULL,
   `score` int NOT NULL,

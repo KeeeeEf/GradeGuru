@@ -73,16 +73,16 @@ const addActivity = (req, res) => {
 
 const getActivity = (req, res) => {
     try {
-      const { course_id } = req.query;
+      const { course_id, term } = req.query;
   
       // Joining the activity table with the criteria table on the type_id and course_id
       const activity_type_sql = `
         SELECT a.*, c.type
         FROM activity a
         JOIN criteria c ON a.criteria_id = c.criteria_id
-        WHERE a.course_id = ?;
+        WHERE a.course_id = ? AND a.term = ?;
       `;
-      const values = [course_id];
+      const values = [course_id, term];
   
       db.query(activity_type_sql, values, (err, results) => {
         if (err) {
@@ -181,7 +181,37 @@ const editActivity = (req, res) => {
 
 
 const deleteActivity = (req,res) =>{
+  const {status, data:{course_id, activity_id}} = req.body
 
+
+  console.log(req.body)
+  console.log(status, course_id, activity_id)
+  
+  let sql='';
+  const values = [course_id, activity_id]
+
+
+  if(status === 'one'){
+    sql = `DELETE FROM activity WHERE course_id=? AND activity_id=?`
+  }else if(status === 'all'){
+    sql = `DELETE FROM activity`
+  }
+
+  db.query(sql, values, (err, results)=>{
+    if (err) {
+      console.error('Error deleting');
+      res.status(500).json({
+        success: false,
+        message: 'Internal Server Error',
+      });
+    } else {
+      res.status(200).json({
+        success: true,
+        message: 'Deleted successfully',
+      });
+    }
+  })
+  
 }
 
 module.exports = {addActivity, getActivity, editActivity, deleteActivity}

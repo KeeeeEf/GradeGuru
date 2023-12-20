@@ -15,7 +15,7 @@ const courseRoutes = require('./routes/courseRoutes')
 
 app.use(cors({
     origin: [process.env.CORS_ORIGIN],
-    methods: ["GET","POST"],
+    methods: ["GET","POST","DELETE"],
     credentials: true,
 }));
 

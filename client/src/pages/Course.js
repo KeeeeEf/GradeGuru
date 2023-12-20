@@ -1,13 +1,15 @@
 import {FormEvent, useEffect, useState} from 'react';
+import '../App.css';
 import config from '../common/config';
 import axios from 'axios';
+import Table from '../components/Table';
 
 import { CircularProgressbar } from 'react-circular-progressbar';
 import "react-circular-progressbar/dist/styles.css";
 
 import DropDown from '../components/Dropdown'
 import NavBar from '../components/Navbar'
-import Table from '../components/Table';
+import Danger from '../components/danger';
 
 const Course = () =>{
 
@@ -17,6 +19,8 @@ const Course = () =>{
     const [score, setScore] = useState('');
     const [total, setTotal] = useState('');
 
+
+    const [isTerm, setIsTerm] = useState('midterms')
     const [activityList, setActivityList] = useState([])
     const [criteria, setCriteria] = useState([]);
     const [error, setError] = useState("");
@@ -25,19 +29,31 @@ const Course = () =>{
     const Title = "CIS1101 PROGRAMMING I"
     const percentage = 66;
 
-
     useEffect(() => {
        fetchCriteria()
        fetchActivity()
-      }, []);
+      }, [isTerm]);
 
     const options = criteria.map((data) => data.type) || [];
 
+    const handleUpdateTable = async () => {
+        // Fetch the latest data after a deletion
+        await fetchActivity();
+      };
+
     const addActivity = () =>{
 
-        if(!activity || !type || !score || !total){
+        if(!type || !score || !total){
             console.log("fill otu everyting")
             setError("Please fill out the form")
+            return;
+        }
+
+        const numericScore = parseFloat(score);
+        const numericTotal = parseFloat(total);
+
+        if(numericScore>numericTotal){
+            setError(`Score is greater than Total`)
             return;
         }
 
@@ -52,17 +68,17 @@ const Course = () =>{
 
                 setActivityList((prevActivityList) => [
                     ...prevActivityList,
-                    res.data.data, // assuming the added data is returned in the response
+                    res.data.data,
                   ]);
 
                 console.log(res.data.data)
 
-                alert("Added Successfully");
                 setActivity("");
                 setType("");
                 setScore("");
                 setTotal("");
                 setSelect('');
+                setError('')
             }else{
                 setError(res.data.error)
             }
@@ -81,16 +97,21 @@ const Course = () =>{
     };
 
     const fetchActivity = async () => {
-        try{
-            const response = await axios.get(`${config.API}/activity/getactivity?course_id=1`);
-            setActivityList(response.data.data)
-            console.log(activity)
-        }catch (err){
+
+        try {
+            const response = await axios.get(`${config.API}/activity/getactivity`, {
+                params: {
+                    course_id: 1,
+                    term: isTerm,
+                },
+            });
+            setActivityList(response.data.data);
+            console.log(activity);
+        } catch (err) {
             console.error('Error fetching criteria:', err);
         }
     };
-
-
+    
     function renderCriteria(datum, index) {
         return (
           <div key={index} className='flex justify-between items-center gap-[10px]'>
@@ -106,7 +127,7 @@ const Course = () =>{
         <div className=''>
             <NavBar/>
             <div className='p-5'>
-            <div>
+            <div className='text-[30px] mb-[2rem]'>
                 <h1>{Title}</h1>
             </div>
             <div className='grid grid-cols-3 gap-4'>
@@ -114,22 +135,22 @@ const Course = () =>{
                 <div className='flex items-center gap-[2rem] relative'>
                     <h2>Add Activity: </h2>
                     <div className='flex flex-col '>
-                        <label className='font-light xs:max-sm:text-[0.4em] xl:max-2xl:text-[0.8em] text-sm font-medium text-gray-600'>Activity (Optional)</label>
-                        <input type="text" className='border border-solid border-black'value={activity} onChange={(e) =>{setActivity(e.target.value)}}/>
+                        <label className='font-light xs:max-sm:text-[0.4em] xl:max-2xl:text-[0.8em] text-sm font-medium text-gray-600 '>Activity (Optional)</label>
+                        <input type="text" className='bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500  block w-full p-2.5 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 'value={activity} onChange={(e) =>{setActivity(e.target.value)}}/>
                     </div>
                     <div className='flex flex-col'>
                         <label className='font-light xs:max-sm:text-[0.4em] xl:max-2xl:text-[0.8em] text-sm font-medium text-gray-600'>Type</label>
-                        <DropDown options={options} title={'Type'} select={select} onSelect={(value)=>{setType(value);setSelect(value)}} className={"border border-1 border-black"}/>
+                        <DropDown options={options} title={'Type'} select={select} onSelect={(value)=>{setType(value);setSelect(value)}} className={"bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500  block w-full p-2.5 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 "}/>
                     </div>
                     <div className='relative flex gap-[5rem]'>
                     <div className='flex flex-col'>
                         <label className='font-light xs:max-sm:text-[0.4em] xl:max-2xl:text-[0.8em] text-sm font-medium text-gray-600'>Score</label>
-                        <input type="text" className='w-[2.5rem] border border-solid border-black' value={score} onChange={(e) =>{setScore(e.target.value)}}/>
+                        <input type="text" className='w-[2.5rem] bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500  block p-2.5 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 ' value={score} onChange={(e) =>{setScore(e.target.value)}}/>
                     </div>
-                         <div className="w-[2.1rem] h-16 border-t-[3px] rounded border-solid border-black transform rotate-[-60deg] absolute left-[4.4rem] top-[1rem]"></div>
+                         <div className="w-[2.1rem] h-16 border-t-[3px] rounded border-solid border-black transform rotate-[-60deg] absolute left-[4.4rem] top-[1.5rem]"></div>
                     <div className='flex flex-col ml-[-2.5rem]'>
                         <label className='font-light xs:max-sm:text-[0.4em] xl:max-2xl:text-[0.8em] text-sm font-medium text-gray-600'>Total</label>
-                        <input type="text" className='w-[2.5rem] border border-solid border-black' value={total} onChange={(e) =>{setTotal(e.target.value)}}/>
+                        <input type="text" className='w-[2.5rem] w-[2.5rem] bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500  block p-2.5 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 ' value={total} onChange={(e) =>{setTotal(e.target.value)}}/>
                     </div>
                     </div>
                     <div className='flex flex-col ml-[-1.5rem] mt-[17px]'>
@@ -140,8 +161,29 @@ const Course = () =>{
                     </div>  
                 </div>
                     <div className=''>
-                        <div className=''>
-                            <Table data={activityList} options={options} criteria={criteria}/>
+                        <div className='gap-[10px] flex'>
+                        <button onClick={() => { setIsTerm('midterms'); }} className={`${isTerm === 'midterms' ? 'text-black' : 'text-gray-400'}`}>
+                        Midterms
+                        </button>
+                        <button onClick={() => { setIsTerm('finals'); }} className={`${isTerm === 'finals' ? 'text-black' : 'text-gray-400'}`}>
+                        Finals
+                        </button>
+                        </div>
+
+                        <div className='w-[100%] h-[35rem] text-center rounded p-5 overflow-auto' style={{
+                                boxShadow: "0px 0px 15px -6px rgba(0,0,0,0.75) inset",
+                                WebkitBoxShadow: "0px 0px 15px -6px rgba(0,0,0,0.75) inset",
+                                MozBoxShadow: "0px 0px 15px -6px rgba(0,0,0,0.75) inset",
+
+                            }}>
+                            {activityList.length === 0?
+                            <div className='flex h-[100%] flex-col items-center justify-center text-[30px]'
+                            >
+                            <h1>No Records Found!</h1>
+                            </div>
+                            :
+                            <Table data={activityList} options={options} criteria={criteria} onUpdate={handleUpdateTable}/>
+                            }
                         </div>
                     </div>
                 </div>
@@ -164,6 +206,7 @@ const Course = () =>{
                     </div>
                 </div>
             </div>
+            {error !='' && <Danger message={error}/>}
             </div>
         </div>
     )
