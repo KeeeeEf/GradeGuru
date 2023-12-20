@@ -35,7 +35,7 @@ const a11yProps = (index) => {
   };
 };
 
-export default function SemesterTab({ semesters, selectedSemester, onSelectSemester, coursesData }) {
+export default function SemesterTab({ semesters }) {
   // Define the custom order for semesters
   const semesterOrder = ['first', 'second', 'summer'];
 
@@ -76,14 +76,19 @@ export default function SemesterTab({ semesters, selectedSemester, onSelectSemes
       </Tabs>
       {sortedSemesters.map((semester, index) => (
         <CustomTabPanel key={index} value={value} index={index}>
-          <CourseList semesterId={semester.sem_id} />
-          <button onClick={openAddCourseModal}>Add Course</button>
+          <CourseList semesterId={semester.sem_id} onCourseAdded={()=>{}} />
+          <div className="flex flex-col items-center">
+            <button onClick={openAddCourseModal} className="bg-blue-500 text-white py-2 px-4 rounded mt-4">Add Course</button>
+          </div>
         </CustomTabPanel>
       ))}
       <AddCourseModal
         isOpen={isAddCourseModalOpen}
         onClose={closeAddCourseModal}
         semesterId={sortedSemesters[value].sem_id} // Pass the selected semester ID
+        onCourseAdded={() => {
+          // Implement callback logic to trigger useEffect in CourseList
+        }}
       />
     </Box>
   );

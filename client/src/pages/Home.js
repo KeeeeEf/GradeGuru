@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import SemesterCard from '../components/SemesterCard';
 import Modal from 'react-modal';
 import Navbar from '../components/Navbar';
 import config from '../common/config';
@@ -32,18 +30,10 @@ const Home = () => {
     }
   };
 
-  const renderSemesters = () => {
-    return semesters.map((semester) => (
-      <Link to={`/semester/${semester.sem_id}`} key={semester.sem_id}>
-        <SemesterCard semester={semester} />
-      </Link>
-    ));
-  };
-
   const renderYearAccordions = () => {
     const uniqueYears = Array.from(new Set(semesters.map((semester) => semester.year)));
-  
-    return uniqueYears.map((year) => (
+    const sortedYears = uniqueYears.sort((a, b) => a - b);
+    return sortedYears.map((year) => (
       <YearAccordion
         key={year}
         year={year}
@@ -60,6 +50,7 @@ const Home = () => {
     setAddSemesterModalOpen(false);
     setSemesterName("");
     setYear("");
+    setError("")
   };
 
   const handleAddSemester = async () => {
@@ -74,10 +65,6 @@ const Home = () => {
   
     if (isDuplicate) {
       setError("Semester with the same name and year already exists.");
-      return;
-    }
-    if (!account_id) {
-      setError("Unable to get the account_id of the logged-in user.");
       return;
     }
 
