@@ -50,7 +50,7 @@ const Home = () => {
     setAddSemesterModalOpen(false);
     setSemesterName("");
     setYear("");
-    setError("")
+    setError("");
   };
 
   const handleAddSemester = async () => {
@@ -60,7 +60,7 @@ const Home = () => {
     }
 
     const isDuplicate = semesters.some(
-      (semester) => semester.semester === semesterName && semester.year === year
+      (semester) => semester.semester === semesterName && semester.year == year
     );
   
     if (isDuplicate) {
