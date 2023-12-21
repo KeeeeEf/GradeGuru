@@ -44,10 +44,14 @@ const SemesterTab = ({ semesters, onSelectSemester }) => {
   const [value, setValue] = React.useState(0);
   const [isAddCourseModalOpen, setAddCourseModalOpen] = React.useState(false);
   const [isDeleteSemesterModalOpen, setDeleteSemesterModalOpen] = React.useState(false);
-
+  
   React.useEffect(() => {
-    setSortedSemesters(semesters);
-  }, [semesters]);
+    // Sort the semesters based on the custom order
+    const sorted = semesters.sort((a, b) =>
+      semesterOrder.indexOf(a.semester) - semesterOrder.indexOf(b.semester)
+    );
+    setSortedSemesters(sorted);
+  }, [semesters, semesterOrder]);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
