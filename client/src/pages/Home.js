@@ -4,6 +4,8 @@ import Navbar from '../components/Navbar';
 import config from '../common/config';
 import axios from 'axios';
 import YearAccordion from '../components/YearAccordion';
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 
 const Home = () => {
   const [semesters, setSemesters] = useState([]);
@@ -12,6 +14,7 @@ const Home = () => {
   const [year, setYear]= useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const user = JSON.parse(localStorage.getItem('userDetails'));
   const account_id = user ? user.userID : null;
 
@@ -76,9 +79,12 @@ const Home = () => {
       semester: semesterName,
     }).then((res) => {
       if (res.data.success === true) {
+        setIsSubmitting(true);
         setTimeout(() => {
           setIsLoading(false);
-        }, 1500);
+          setIsSubmitting(false);
+          closeAddSemesterModal();
+        }, 3000);
         fetchSemesters();
       } else {
         setTimeout(() => {
@@ -91,7 +97,7 @@ const Home = () => {
       setIsLoading(false);
     });
 
-    closeAddSemesterModal();
+    
   };
 
   return (
@@ -124,7 +130,10 @@ const Home = () => {
             <label htmlFor="semester" className="block text-sm font-medium text-gray-600">
               Semester
             </label>
-            <select
+            {isSubmitting ? (
+  <Skeleton height={40} width={"100%"} baseColor='#bcbcbc' />
+) : (
+  <select
             value={semesterName}
             onChange={(e) => setSemesterName(e.target.value)}
             className="border rounded p-2 mb-4 w-full"
@@ -136,16 +145,23 @@ const Home = () => {
             <option value="second">Second Semester</option>
             <option value="summer">Summer</option>
           </select>
+)}
+            
           <label htmlFor="year" className="block text-sm font-medium text-gray-600">
               Year
             </label>
-            <input
+            {isSubmitting ? (
+            <Skeleton className="mb-4" height={40} width={"100%"} baseColor='#bcbcbc' />
+) : (
+  <input
               type="text"
               placeholder="Enter Year"
               value={year}
               onChange={(e) => setYear(e.target.value)}
               className="border rounded p-2 mb-4 w-full"
             />
+)}
+            
             <button
               onClick={handleAddSemester}
               className="bg-blue-500 text-white py-2 px-4 rounded mr-2"
@@ -158,7 +174,6 @@ const Home = () => {
             >
               Cancel
             </button>
-            {isLoading && <p>Loading...</p>}
             {error && <p className="text-red-500">{error}</p>}
           </div>
         </Modal>

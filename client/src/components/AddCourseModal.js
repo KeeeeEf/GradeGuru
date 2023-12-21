@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
 import axios from 'axios';
 import config from '../common/config';
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 
 const AddCourseModal = ({ isOpen, onClose, semesterId, onCourseAdded }) => {
   const [courseName, setCourseName] = useState('');
@@ -10,6 +12,7 @@ const AddCourseModal = ({ isOpen, onClose, semesterId, onCourseAdded }) => {
   const [currentPercentage, setCurrentPercentage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleAddType = () => {
     if (currentType && currentPercentage) {
@@ -64,11 +67,15 @@ const AddCourseModal = ({ isOpen, onClose, semesterId, onCourseAdded }) => {
           types,
         });
 
-
-        onCourseAdded();
-        setCourseName('');
-        setTypes([]);
-        onClose();
+        setIsSubmitting(true);
+        setTimeout(()=>{
+          setIsSubmitting(false);
+          onCourseAdded();
+          setCourseName('');
+          setTypes([]);
+          onClose();
+        }, 3000);
+        
       } else {
         setError(response.data.message);
       }
@@ -109,13 +116,18 @@ const AddCourseModal = ({ isOpen, onClose, semesterId, onCourseAdded }) => {
         <label htmlFor="courseName" className="block text-sm font-medium text-gray-600">
           Course Name
         </label>
-        <input
-          type="text"
-          placeholder="Enter Course Name"
-          value={courseName}
-          onChange={(e) => setCourseName(e.target.value)}
-          className="border rounded p-2 mb-4 w-full"
-        />
+        {isSubmitting ? (
+  <Skeleton height={40} width={"100%"} baseColor='#bcbcbc' />
+) : (
+  <input
+    type="text"
+    placeholder="Enter Course Name"
+    value={courseName}
+    onChange={(e) => setCourseName(e.target.value)}
+    className="border rounded p-2 mb-4 w-full"
+  />
+)}
+
         <label htmlFor="currentType" className=" text-sm font-medium text-gray-600">
           Activity
         </label>
