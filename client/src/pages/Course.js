@@ -10,14 +10,17 @@ import "react-circular-progressbar/dist/styles.css";
 import DropDown from '../components/Dropdown'
 import NavBar from '../components/Navbar'
 import Danger from '../components/danger';
+import { useParams } from 'react-router-dom';
 
 const Course = () =>{
 
-
+    const {course_id} = useParams();
+    
     const [activity, setActivity] = useState('');
     const [type, setType] = useState('');
     const [score, setScore] = useState('');
     const [total, setTotal] = useState('');
+    const [grade, setGrade] = useState({});
 
 
     const [isTerm, setIsTerm] = useState('midterms')
@@ -25,14 +28,19 @@ const Course = () =>{
     const [criteria, setCriteria] = useState([]);
     const [error, setError] = useState("");
     const [select, setSelect] = useState('');
-    
-    const Title = "CIS1101 PROGRAMMING I"
+    const [title, setTitle] = useState('');
+
     const percentage = 66;
 
     useEffect(() => {
        fetchCriteria()
        fetchActivity()
       }, [isTerm]);
+
+    useEffect(() => {
+        // Call calculateGrade after fetching data or any relevant updates
+        calculateGrade();
+    }, [activityList, criteria]);
 
     const options = criteria.map((data) => data.type) || [];
 
@@ -58,7 +66,8 @@ const Course = () =>{
         }
 
         axios.post(`${config.API}/activity/addactivity`,{
-            course_id: 1,
+            course_id: course_id,
+            term: isTerm,
             activity: activity,
             type: type,
             score: score,
@@ -89,7 +98,7 @@ const Course = () =>{
 
     const fetchCriteria = async () => {
         try{
-            const response = await axios.get(`${config.API}/criteria/getcriteria?course_id=1`);
+            const response = await axios.get(`${config.API}/criteria/getcriteria?course_id=${course_id}`);
             setCriteria(response.data.data)
         }catch (err){
             console.error('Error fetching criteria:', err);
@@ -101,12 +110,12 @@ const Course = () =>{
         try {
             const response = await axios.get(`${config.API}/activity/getactivity`, {
                 params: {
-                    course_id: 1,
+                    course_id: course_id,
                     term: isTerm,
                 },
             });
             setActivityList(response.data.data);
-            console.log(activity);
+            setTitle(response.data.data[0].course_name)
         } catch (err) {
             console.error('Error fetching criteria:', err);
         }
@@ -121,6 +130,64 @@ const Course = () =>{
           </div>
         );
       }
+
+      const calculateGrade = () => {
+        let grades = [];
+    
+        criteria.forEach((data) => {
+            grades.push({
+                score: 0,
+                total: 0,
+                type: data.type,
+                percentage: data.percentage / 100
+            });
+        });
+    
+        activityList.forEach((data) => {
+            const index = grades.findIndex((grade) => grade.type === data.type);
+    
+            if (index !== -1) {
+                grades[index].score += data.score;
+                grades[index].total += data.total;
+            }
+        });
+    
+        const calculate = grades.map((data) => {
+            if (data.total !== 0) {
+                const result = (data.score / data.total) * data.percentage;
+                return parseFloat(result.toFixed(4));
+            } else {
+                return 0;
+            }
+        });
+    
+        let summedGrade = calculate.reduce((accumulator, currentNumber) => {
+            return accumulator + currentNumber;
+        }, 0);
+    
+        const rounded = Math.floor(summedGrade * 100);
+    
+        if (rounded >= 95 && rounded <= 100) {
+            setGrade({
+                scale: 5.0.toFixed(1),
+                percentage: parseFloat((summedGrade*100).toFixed(2))
+            });
+        } else if(rounded <=94 && rounded >=75){
+            let subtract = (94 - rounded)/100;
+            setGrade({
+                scale: parseFloat((1.0+subtract).toFixed(1)),
+                percentage: parseFloat((summedGrade*100).toFixed(2))
+            });
+        }else{
+            setGrade({
+                scale: 5.0.toFixed(1),
+                percentage: parseFloat((summedGrade*100).toFixed(2))
+            })
+        }
+
+        console.log(grade)
+    };
+    
       
 
     return(
@@ -128,11 +195,11 @@ const Course = () =>{
             <NavBar/>
             <div className='p-5'>
             <div className='text-[30px] mb-[2rem]'>
-                <h1>{Title}</h1>
+                <h1>{title}</h1>
             </div>
             <div className='grid grid-cols-3 gap-4'>
                 <div className='ml-[2rem] flex flex-col col-span-2 p-5'>
-                <div className='flex items-center gap-[2rem] relative'>
+                <div className='flex items-center gap-[2rem] relative mb-[2rem]'>
                     <h2>Add Activity: </h2>
                     <div className='flex flex-col '>
                         <label className='font-light xs:max-sm:text-[0.4em] xl:max-2xl:text-[0.8em] text-sm font-medium text-gray-600 '>Activity (Optional)</label>
@@ -153,10 +220,10 @@ const Course = () =>{
                         <input type="text" className='w-[2.5rem] w-[2.5rem] bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500  block p-2.5 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 ' value={total} onChange={(e) =>{setTotal(e.target.value)}}/>
                     </div>
                     </div>
-                    <div className='flex flex-col ml-[-1.5rem] mt-[17px]'>
+                    <div className='flex flex-col ml-[-1.5rem] mt-[17px] '>
                         <button onClick={addActivity} type='submit' className='flex items-center justify-center button bg-[#6366F1] text-white p-[0.5em] w-[100%] rounded hover:bg-[#818cf8] font-bold transition-colors delay-250 duration-[3000] ease-in xs:max-sm:text-[0.4em] xs:max-sm:w-[9vh] xl:max-2xl:text-[0.7em]'>
                         {/* {isLoading && <Spinner className='mr-[1%]'/>} */}
-                                                +
+                                                Add
                         </button>
                     </div>  
                 </div>
@@ -187,18 +254,20 @@ const Course = () =>{
                         </div>
                     </div>
                 </div>
-                <div className='flex flex-col justify-center items-center w-[100%] bg-black p-5'>
+                <div className='flex flex-col items-center  w-[100%] shadow-lg p-5'>
                     <div className='w-[200px] h-[200px]'>
-                        <CircularProgressbar value={percentage} text={`${percentage}%`} strokeWidth={5}/>;
+                        <CircularProgressbar value={grade.percentage} text={`${grade.percentage}%`} strokeWidth={5}/>;
                     </div>
-                    <div className='p-5 bg-white w-[100%] mt-[2rem]'>
+                    <h1 className='text-black text-[30px]'>Your grade is: {grade.scale}</h1>
+                    <div className='p-5 bg-white w-[100%] mt-[3rem]'>
+                        <h1 className='text-gray-500 italic mb-[1rem]'>Note: 100%-95% = 1.0 and 75% below = 5.0</h1>
                         <div className='relative'>
                             <h2 className='font-bold'>Criteria</h2>
                             <button className='absolute top-0 right-[10px]'>
                                 edit
                             </button>
                         </div>
-                        <div className='p-2'>
+                        <div className='flex flex-col gap-[10px] p-2'>
                             {criteria.map((data)=>renderCriteria(data))}
                             <div className='relative mt-[5px] mb-[5px]'><div className='w-[40px] h-[2px] bg-black absolute right-0'/></div>
                             <h1 className='text-right font-bold'>100%</h1>
@@ -206,7 +275,7 @@ const Course = () =>{
                     </div>
                 </div>
             </div>
-            {error !='' && <Danger message={error}/>}
+            {error !='' && <Danger message={error} onChanged={(value)=>setError(value)}/>}
             </div>
         </div>
     )

@@ -2,48 +2,58 @@ import React, { useState, useEffect } from 'react';
 import Dropdown from './Dropdown';
 import config from '../common/config';
 import axios from 'axios';
+import Danger from './danger';
 
 const Table = (props) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedData, setEditedData] = useState([]);
   const [activityId, setActivityId] = useState('');
   const [deleteState, setDeleteState] = useState('');
+  const [error, setError] = useState("");
 
   useEffect(() => {
     setEditedData([...props.data]);
   }, [props.data]);
 
   useEffect(() => {
-    // Trigger an update after setting editedData
     setEditedData([...props.data]);
   }, [props.data, isEditing]);
-
-  useEffect(() => {
-    // Log editedData for debugging purposes
-    console.log('Edited Data:', editedData);
-  }, [editedData]); // Optional: Add this useEffect for debugging
 
   const handleEdit = () => {
     setIsEditing(!isEditing);
   };
 
   const handleUpdate = () => {
+
+    const test = editedData.some((data)=>{
+      const numericScore = parseFloat(data.score);
+      const numericTotal = parseFloat(data.total);
+
+      return numericScore>numericTotal;
+    })
+
+
+    if(test){
+      setError(`Score is greater than Total`)
+      return;
+  }
+
     axios.post(`${config.API}/activity/editactivity`, editedData)
       .then((res) => {
         if (res.data.success === true) {
-          // Optionally, you may want to refetch the data after updating on the server
-          props.onUpdate(); // Add this line
+          props.onUpdate(); 
+          setIsEditing(!isEditing);
         } else {
         }
       });
   };
 
   const handleInputChange = (index, field, value) => {
-    // Update the editedData state when an input field changes
-
-    const newData = [...editedData];
-    newData[index][field] = value;
-    setEditedData(newData);
+    setEditedData(prevData => {
+      const newData = [...prevData];
+      newData[index][field] = value;
+      return newData;
+    });
   };
 
   const handleDeleteState = (status) => {
@@ -74,7 +84,6 @@ const Table = (props) => {
   
       if (response.data.success === true) {
         alert("Deleted Successfully!");
-        // Notify the parent component about the deletion
         props.onUpdate();
         setActivityId('');
         setDeleteState('');
@@ -102,7 +111,6 @@ const Table = (props) => {
   
       if (response.data.success === true) {
         alert("Deleted All Successfully!");
-        // Notify the parent component about the deletion
         props.onUpdate();
         setDeleteState('');
       } else {
@@ -118,7 +126,7 @@ const Table = (props) => {
   return (
     <div className="w-full">
       <div className=''>
-        <button onClick={handleEdit} className='float-right'>
+        <button onClick={isEditing? handleUpdate : handleEdit} className='float-right'>
           {isEditing ? 'Save Grade' : 'Edit Grade'}
         </button>
         {isEditing ? <button onClick={()=>{;handleDeleteState('all'); }}className='float-right mr-[2rem]'>Delete All</button>:<div></div>}
@@ -198,6 +206,7 @@ const Table = (props) => {
           ))}
         </tbody>
       </table>
+      {error !='' && <Danger message={error} onChanged={(value)=>setError(value)}/>}
     </div>
   );
 };

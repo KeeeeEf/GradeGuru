@@ -11,7 +11,6 @@ const Dropdown = (props) => {
   }, [props.select]);
 
   const handleSelectChange = (e) => {
-    console.log(e.target.value)
     const changedvalue = e.target.value;
     props.onSelect(changedvalue);
   };
