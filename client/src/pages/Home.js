@@ -104,19 +104,33 @@ const Home = () => {
     <div>
       <Navbar />
       <div className="container mx-auto flex flex-col items-center p-8">
-        <h1 className="text-3xl font-bold text-center mb-8">GradeGuru</h1>
-        <h2 className="text-2xl text-center font-semibold mb-4">Semesters</h2>
-        <h2 className="text-xl text-center mb-4">Click on a semester to view your grades!</h2>
-        {renderYearAccordions()}
+        <div className='w-[70rem] flex justify-between'>
+          <div className=''>
+            <h1 className="text-3xl font-bold">GradeGuru</h1>
+            <h2 className='text-2xl'>Calculate Your Grade</h2>
+          </div>
+          <div className=''>
+          <button
+            onClick={openAddSemesterModal}
+            className="bg-blue-500 text-white py-2 px-4 rounded mt-4"
+          >
+            Add Semester
+          </button>
+        </div>
+        </div>
+        <div className='p-5 w-[70rem] h-[40rem]' style={{
+                                boxShadow: "0px 0px 15px -6px rgba(0,0,0,0.75) inset",
+                                WebkitBoxShadow: "0px 0px 15px -6px rgba(0,0,0,0.75) inset",
+                                MozBoxShadow: "0px 0px 15px -6px rgba(0,0,0,0.75) inset",
+
+                            }}>
+          {(semesters.length === 0)?<div className='flex items-center justify-center h-full text-[30px]'>
+            No records found!
+          </div>:renderYearAccordions()}
+        </div>
         <div className="grid grid-cols-1 gap-4 w-1/3">
           
         </div>
-        <button
-          onClick={openAddSemesterModal}
-          className="bg-blue-500 text-white py-2 px-4 rounded mt-4"
-        >
-          Add Semester
-        </button>
         
         <Modal
           isOpen={isAddSemesterModalOpen}
