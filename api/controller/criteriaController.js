@@ -53,4 +53,44 @@ const getCriteria = (req,res) =>{
     }
 };
 
-module.exports = { addCriteria, getCriteria };
+const editCriteria = (res,req) =>{
+  try{
+    const criteria = req.body
+
+    criteria.forEach((data)=>{
+      const {criteria_id, type, percentage} = data
+      
+      const sql = 'UPDATE criteria SET type=?, percentage=? WHERE criteria_id = ?'
+      const values = [type, percentage, criteria_id]
+
+      db.query(sql, values, (err, results)=>{
+        if(err){
+          console.error('Error getting activity and criteria');
+          res.status(500).json({
+            success: false,
+            message: 'Internal Server Error',
+          });
+        }else{
+          res.status(200).json({
+            success: true,
+            message: 'Criteria Updated successfully',
+            data: results,
+          });
+        }
+      })
+    })
+
+  }catch{
+    console.error('Error updating activities:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Internal Server Error',
+    });
+  }
+}
+
+const deleteCriteria = () =>{
+  
+}
+
+module.exports = { addCriteria, getCriteria, editCriteria, deleteCriteria };

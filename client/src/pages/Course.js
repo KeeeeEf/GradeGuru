@@ -4,6 +4,8 @@ import config from '../common/config';
 import axios from 'axios';
 import Table from '../components/Table';
 
+import Modal from 'react-modal'
+import Skeleton from 'react-loading-skeleton';
 import { CircularProgressbar } from 'react-circular-progressbar';
 import "react-circular-progressbar/dist/styles.css";
 
@@ -11,6 +13,7 @@ import DropDown from '../components/Dropdown'
 import NavBar from '../components/Navbar'
 import Danger from '../components/danger';
 import { useParams } from 'react-router-dom';
+  
 
 const Course = () =>{
 
@@ -29,6 +32,9 @@ const Course = () =>{
     const [error, setError] = useState("");
     const [select, setSelect] = useState('');
     const [title, setTitle] = useState('');
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const percentage = 66;
 
@@ -56,6 +62,11 @@ const Course = () =>{
             setError("Please fill out the form")
             return;
         }
+
+        if (!Number.isNaN(Number(score)) || !Number.isNaN(Number(total))) {
+            setError("Score or Total is not a number");
+            return;
+          }
 
         const numericScore = parseFloat(score);
         const numericTotal = parseFloat(total);
@@ -187,6 +198,14 @@ const Course = () =>{
 
         console.log(grade)
     };
+
+    const openModal = () =>{
+        setIsModalOpen(true)
+    }
+
+    const closeModal = () =>{
+        setIsModalOpen(false)
+    }
     
       
 
@@ -259,13 +278,13 @@ const Course = () =>{
                         <CircularProgressbar value={grade.percentage} text={`${grade.percentage}%`} strokeWidth={5}/>;
                     </div>
                     <h1 className='text-black text-[30px]'>Your grade is: {grade.scale}</h1>
-                    <div className='p-5 bg-white w-[100%] mt-[3rem]'>
+                    <div className='p-5 bg-white w-[100%] mt-[3rem] shadow-md'>
                         <h1 className='text-gray-500 italic mb-[1rem]'>Note: 100%-95% = 1.0 and 75% below = 5.0</h1>
                         <div className='relative'>
                             <h2 className='font-bold'>Criteria</h2>
-                            <button className='absolute top-0 right-[10px]'>
+                            {/* <button onClick={openModal} className='absolute top-0 right-[10px]'>
                                 edit
-                            </button>
+                            </button> */}
                         </div>
                         <div className='flex flex-col gap-[10px] p-2'>
                             {criteria.map((data)=>renderCriteria(data))}
@@ -275,7 +294,64 @@ const Course = () =>{
                     </div>
                 </div>
             </div>
-            {error !='' && <Danger message={error} onChanged={(value)=>setError(value)}/>}
+                {error !='' && <Danger message={error} onChanged={(value)=>setError(value)}/>}
+                {/* <Modal
+                    isOpen={isModalOpen}
+                    onRequestClose={closeModal}
+                    contentLabel="Edit Criteria Modal"
+                    className="bg-white p-5 rounded absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+                    overlayClassName="overlay"
+                >
+                    <div className="modal-content ">
+                        <h2 className="text-2xl font-bold mb-4">Edit Criteria</h2>
+
+                        <div className=' items-center'>
+                            <div className='flex mb-4 gap-[10rem] '>
+                                <label className="block text-md font-bold">Criteria</label>
+                                <label className="block text-md font-bold ml-4">%</label>
+                            </div>
+
+                            {criteria.map((item, index) => (
+                                <div key={index} className='flex mb-4'>
+                                    <div className="mr-4">
+                                        {isSubmitting ? (
+                                            <Skeleton className="mb-4" height={40} width={"100%"} baseColor='#bcbcbc' />
+                                        ) : (
+                                            <input
+                                                type="text"
+                                                placeholder="Enter Criteria"
+                                                value={item.type}
+                                                className="border rounded p-2 mb-2"
+                                                // You might want to add an onChange handler to update the state accordingly
+                                            />
+                                        )}
+                                    </div>
+                                    <div>
+                                        {isSubmitting ? (
+                                            <Skeleton className="mb-4" height={40} width={"100%"} baseColor='#bcbcbc' />
+                                        ) : (
+                                            <input
+                                                type="text"
+                                                placeholder="Enter Percentage"
+                                                value={item.percentage}
+                                                className="border rounded p-2 mb-2"
+                                                // You might want to add an onChange handler to update the state accordingly
+                                            />
+                                        )}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+
+                        <button className="bg-blue-500 text-white py-2 px-4 rounded mr-2">
+                            Save
+                        </button>
+                        <button onClick={closeModal} className="bg-gray-500 text-white py-2 px-4 rounded">
+                            Cancel
+                        </button>
+                        {error && <p className="text-red-500">{error}</p>}
+                    </div>
+                </Modal> */}
             </div>
         </div>
     )

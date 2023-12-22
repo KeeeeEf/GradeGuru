@@ -112,8 +112,6 @@ const editActivity = (req, res) => {
   try {
     const activities = req.body;
 
-    console.log(req.body);
-
     const updatePromises = [];
 
     activities.forEach((data) => {
