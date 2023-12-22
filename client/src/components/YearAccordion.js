@@ -11,7 +11,7 @@ const YearAccordion = ({ year, semesters, coursesData }) => {
   };
 
   return (
-    <Accordion className="w-2/3 m-4">
+    <Accordion className="w-2/3 m-2">
       <AccordionSummary expandIcon={<ExpandMoreIcon />}>
         <Typography variant="h6">Year {year}-{year + 1}</Typography>
       </AccordionSummary>
