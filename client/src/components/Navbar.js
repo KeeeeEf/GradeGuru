@@ -1,41 +1,59 @@
 import React, { useState } from 'react';
+import { Link, NavLink, Navigate } from 'react-router-dom';
+import Drawer from '@mui/material/Drawer';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemText from '@mui/material/ListItemText';
+import Divider from '@mui/material/Divider';
+import Button from '@mui/material/Button';
 
 const Navbar = () => {
-  const [isDropdownOpen, setDropdownOpen] = useState(false);
+  const user = JSON.parse(localStorage.getItem('userDetails'));
+  const [isDrawerOpen, setDrawerOpen] = useState(false);
 
-  const toggleDropdown = () => {
-    setDropdownOpen(!isDropdownOpen);
+  const toggleDrawer = () => {
+    setDrawerOpen(!isDrawerOpen);
   };
 
   const handleLogout = () => {
-    // Logout stuff
-    setDropdownOpen(false);
+    localStorage.removeItem('userDetails');
+    setDrawerOpen(false);
   };
 
-  return (
-    <nav className="flex justify-end p-4 bg-slate-600">
-      <div className="relative">
-        <button
-          onClick={toggleDropdown}
-          className="flex items-center focus:outline-none"
-        >
-          <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
-            <span className="text-gray-600">P</span>
-          </div>
-        </button>
+  if (!user) {
+    return <Navigate to="/login"/>;
+  }
 
-        {isDropdownOpen && (
-          <div className="absolute top-10 right-0 bg-white border rounded shadow mt-2">
-            <button
-              onClick={handleLogout}
-              className="block w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-200"
-            >
-              Logout
-            </button>
-          </div>
-        )}
-      </div>
-    </nav>
+  return (
+    <div>
+      <Drawer anchor="left" open={isDrawerOpen} onClose={toggleDrawer}>
+        <List>
+          <ListItem button component={Link} to="/">
+            <ListItemText primary="Home" />
+          </ListItem>
+        </List>
+        <Divider />
+        <List>
+          <ListItem>
+            <ListItemText primary={`Welcome, ${user?.user}!`} />
+          </ListItem>
+        </List>
+        <Divider />
+        <List>
+          <ListItem button onClick={handleLogout} component={NavLink} to="/login">
+            <ListItemText primary="Logout" />
+          </ListItem>
+        </List>
+      </Drawer>
+
+      <nav className="flex justify-between items-center p-4 bg-slate-600">
+        <div className="flex items-center">
+          <Button onClick={toggleDrawer} sx={{ color: 'white' }}>
+            Open Sidebar
+          </Button>
+        </div>
+      </nav>
+    </div>
   );
 };
 
