@@ -177,6 +177,7 @@ const Course = () =>{
         }, 0);
     
         const rounded = Math.floor(summedGrade * 100);
+
     
         if (rounded >= 95 && rounded <= 100) {
             setGrade({
@@ -184,9 +185,16 @@ const Course = () =>{
                 percentage: parseFloat((summedGrade*100).toFixed(2))
             });
         } else if(rounded <=94 && rounded >=75){
-            let subtract = (94 - rounded)/100;
+            let subtract = (94 - rounded);
+
+            let value = 1.0
+
+            for(let i=0; i<=subtract;i++){
+                value += 0.1
+            }
+            console.log(value)
             setGrade({
-                scale: parseFloat((1.0+subtract).toFixed(1)),
+                scale: parseFloat((value).toFixed(1)),
                 percentage: parseFloat((summedGrade*100).toFixed(2))
             });
         }else{
