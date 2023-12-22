@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const CourseCard = ({ course, onDelete }) => {
   return (
@@ -7,8 +8,8 @@ const CourseCard = ({ course, onDelete }) => {
       <Link to={`/course/${course.course_id}`} key={course.course_id}>
         <h3 className="text-xl font-semibold mb-2">{course.course_name}</h3>
       </Link>
-      <button onClick={() => onDelete(course.course_id)} className="bg-red-500 text-white py-2 px-4 rounded">
-        Delete
+      <button onClick={() => onDelete(course.course_id)} className="py-2 px-4 rounded text-red-500">
+        <DeleteIcon />
       </button>
     </div>
   );
