@@ -4,6 +4,7 @@ import axios from 'axios';
 import config from '../common/config';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
+import ClearIcon from '@mui/icons-material/Clear';
 
 const AddCourseModal = ({ isOpen, onClose, semesterId, onCourseAdded }) => {
   const [courseName, setCourseName] = useState('');
@@ -117,48 +118,65 @@ const AddCourseModal = ({ isOpen, onClose, semesterId, onCourseAdded }) => {
           Course Name
         </label>
         {isSubmitting ? (
-  <Skeleton height={40} width={"100%"} baseColor='#bcbcbc' />
-) : (
-  <input
-    type="text"
-    placeholder="Enter Course Name"
-    value={courseName}
-    onChange={(e) => setCourseName(e.target.value)}
-    className="border rounded p-2 mb-4 w-full"
-  />
-)}
+          <Skeleton height={40} width={"100%"} baseColor="#bcbcbc" />
+        ) : (
+          <input
+            type="text"
+            placeholder="Enter Course Name"
+            value={courseName}
+            onChange={(e) => setCourseName(e.target.value)}
+            className="border rounded p-2 mb-4 w-full"
+          />
+        )}
 
-        <label htmlFor="currentType" className=" text-sm font-medium text-gray-600">
+        <label htmlFor="currentType" className="text-sm font-medium text-gray-600">
           Activity
         </label>
         <div className="flex mb-4">
-        
-          <input
-            type="text"
-            placeholder="Type"
-            value={currentType}
-            onChange={(e) => setCurrentType(e.target.value)}
-            className="border rounded p-2 mr-2 w-1/2"
-          />
-          <input
-            type="text"
-            placeholder="Percentage"
-            value={currentPercentage}
-            onChange={(e) => setCurrentPercentage(e.target.value)}
-            className="border rounded p-2 w-1/2"
-          />
+          <div className="w-1/2 mr-2">
+            {isSubmitting ? (
+              <Skeleton height={40} width={"100%"} baseColor="#bcbcbc" />
+            ) : (
+              <input
+                type="text"
+                placeholder="Type"
+                value={currentType}
+                onChange={(e) => setCurrentType(e.target.value)}
+                className="border rounded p-2 w-full"
+              />
+            )}
+          </div>
+          <div className="w-1/2">
+            {isSubmitting ? (
+              <Skeleton height={40} width={"100%"} baseColor="#bcbcbc" />
+            ) : (
+              <input
+                type="text"
+                placeholder="Percentage"
+                value={currentPercentage}
+                onChange={(e) => setCurrentPercentage(e.target.value)}
+                className="border rounded p-2 w-full"
+              />
+            )}
+          </div>
           <button onClick={handleAddType} className="bg-blue-500 text-white py-2 px-4 rounded ml-2">
             Add
           </button>
         </div>
         {types.map((type, index) => (
           <div key={index} className="flex mb-2">
-            <span>{`${type.type} ${type.percentage}%`}</span>
-            <button onClick={() => handleDeleteType(index)} className="bg-red-500 text-white py-1 px-2 rounded ml-2">
-              Delete
+            <div className="w-1/3">
+              <span className="font-semibold">{type.type}</span>
+            </div>
+            <div className="w-1/6">
+              <span>{type.percentage}%</span>
+            </div>
+            <button onClick={() => handleDeleteType(index)} className="rounded">
+              <ClearIcon />
             </button>
           </div>
         ))}
+
         <button
           onClick={handleAddCourse}
           className="bg-blue-500 text-white py-2 px-4 rounded mr-2 mt-4"
