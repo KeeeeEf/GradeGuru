@@ -14,6 +14,7 @@ const AddCourseModal = ({ isOpen, onClose, semesterId, onCourseAdded }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [units, setUnits] = useState('');
 
   const handleAddType = () => {
     if (currentType && currentPercentage) {
@@ -58,6 +59,7 @@ const AddCourseModal = ({ isOpen, onClose, semesterId, onCourseAdded }) => {
       const response = await axios.post(`${config.API}/courses/addCourseBySemester`, {
         sem_id: semesterId,
         course_name: courseName,
+        units: units
       });
       
 
@@ -73,6 +75,7 @@ const AddCourseModal = ({ isOpen, onClose, semesterId, onCourseAdded }) => {
           setIsSubmitting(false);
           onCourseAdded();
           setCourseName('');
+          setUnits('');
           setTypes([]);
           onClose();
         }, 3000);
@@ -128,6 +131,21 @@ const AddCourseModal = ({ isOpen, onClose, semesterId, onCourseAdded }) => {
             className="border rounded p-2 mb-4 w-full"
           />
         )}
+        
+        <label htmlFor="units" className="block text-sm font-medium text-gray-600">
+          Units
+        </label>
+        {isSubmitting ? (
+          <Skeleton height={40} width={"100%"} baseColor="#bcbcbc" />
+        ) : (
+          <input
+            type="text"
+            placeholder="Enter Units"
+            value={units}
+            onChange={(e) => setUnits(e.target.value)}
+            className="border rounded p-2 mb-4 w-full" // Adjust width as needed
+          />
+        )}
 
         <label htmlFor="currentType" className="text-sm font-medium text-gray-600">
           Activity
@@ -159,6 +177,8 @@ const AddCourseModal = ({ isOpen, onClose, semesterId, onCourseAdded }) => {
               />
             )}
           </div>
+
+          
           <button onClick={handleAddType} className="bg-blue-500 text-white py-2 px-4 rounded ml-2">
             Add
           </button>
