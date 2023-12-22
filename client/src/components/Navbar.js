@@ -6,6 +6,7 @@ import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import Divider from '@mui/material/Divider';
 import Button from '@mui/material/Button';
+import { FiMenu } from "react-icons/fi";
 
 const Navbar = () => {
   const user = JSON.parse(localStorage.getItem('userDetails'));
@@ -49,7 +50,7 @@ const Navbar = () => {
       <nav className="flex justify-between items-center p-4 bg-slate-600">
         <div className="flex items-center">
           <Button onClick={toggleDrawer} sx={{ color: 'white' }}>
-            Open Sidebar
+            <FiMenu className='text-[24px]'/>
           </Button>
         </div>
       </nav>
