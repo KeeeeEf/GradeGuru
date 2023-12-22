@@ -63,7 +63,7 @@ const Course = () =>{
             return;
         }
 
-        if (!Number.isNaN(Number(score)) || !Number.isNaN(Number(total))) {
+        if (Number.isNaN(Number(score)) || Number.isNaN(Number(total))) {
             setError("Score or Total is not a number");
             return;
           }
@@ -181,7 +181,7 @@ const Course = () =>{
     
         if (rounded >= 95 && rounded <= 100) {
             setGrade({
-                scale: 5.0.toFixed(1),
+                scale: 1.0.toFixed(1),
                 percentage: parseFloat((summedGrade*100).toFixed(2))
             });
         } else if(rounded <=94 && rounded >=75){
@@ -303,63 +303,6 @@ const Course = () =>{
                 </div>
             </div>
                 {error !='' && <Danger message={error} onChanged={(value)=>setError(value)}/>}
-                {/* <Modal
-                    isOpen={isModalOpen}
-                    onRequestClose={closeModal}
-                    contentLabel="Edit Criteria Modal"
-                    className="bg-white p-5 rounded absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
-                    overlayClassName="overlay"
-                >
-                    <div className="modal-content ">
-                        <h2 className="text-2xl font-bold mb-4">Edit Criteria</h2>
-
-                        <div className=' items-center'>
-                            <div className='flex mb-4 gap-[10rem] '>
-                                <label className="block text-md font-bold">Criteria</label>
-                                <label className="block text-md font-bold ml-4">%</label>
-                            </div>
-
-                            {criteria.map((item, index) => (
-                                <div key={index} className='flex mb-4'>
-                                    <div className="mr-4">
-                                        {isSubmitting ? (
-                                            <Skeleton className="mb-4" height={40} width={"100%"} baseColor='#bcbcbc' />
-                                        ) : (
-                                            <input
-                                                type="text"
-                                                placeholder="Enter Criteria"
-                                                value={item.type}
-                                                className="border rounded p-2 mb-2"
-                                                // You might want to add an onChange handler to update the state accordingly
-                                            />
-                                        )}
-                                    </div>
-                                    <div>
-                                        {isSubmitting ? (
-                                            <Skeleton className="mb-4" height={40} width={"100%"} baseColor='#bcbcbc' />
-                                        ) : (
-                                            <input
-                                                type="text"
-                                                placeholder="Enter Percentage"
-                                                value={item.percentage}
-                                                className="border rounded p-2 mb-2"
-                                                // You might want to add an onChange handler to update the state accordingly
-                                            />
-                                        )}
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-
-                        <button className="bg-blue-500 text-white py-2 px-4 rounded mr-2">
-                            Save
-                        </button>
-                        <button onClick={closeModal} className="bg-gray-500 text-white py-2 px-4 rounded">
-                            Cancel
-                        </button>
-                        {error && <p className="text-red-500">{error}</p>}
-                    </div>
-                </Modal> */}
             </div>
         </div>
     )
