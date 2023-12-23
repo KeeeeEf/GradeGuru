@@ -9,7 +9,7 @@ Track and manage your academic grades with ease.
 - [Usage](#usage)
 
 ## About
-The GradeGuru is a web application designed to help students keep track of their academic performance. It provides a convenient way to organize course information, input grades, and calculate semester GPAs.
+GradeGuru is a web application designed to help students keep track of their academic performance. It provides a convenient way to organize course information, input grades, and calculate semester GPAs.
 
 ## Features
 - Add and view courses for each semester.
@@ -22,8 +22,8 @@ The GradeGuru is a web application designed to help students keep track of their
 - Node.js installed
 - npm (Node Package Manager) installed
 - XAMPP installed (for running a local server)
--- MySQL module installed and running
--- Apache module installed (for managing phpMyAdmin and database)
+	- MySQL module installed and running
+	- Apache module installed (for managing phpMyAdmin and database)
 
 ### Installation
 1. Clone the repository:
