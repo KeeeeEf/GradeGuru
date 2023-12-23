@@ -22,8 +22,8 @@ GradeGuru is a web application designed to help students keep track of their aca
 - Node.js installed
 - npm (Node Package Manager) installed
 - XAMPP installed (for running a local server)
--- MySQL module installed and running
--- Apache module installed (for managing phpMyAdmin and database)
+	- MySQL module installed and running
+	- Apache module installed (for managing phpMyAdmin and database)
 
 ### Installation
 1. Clone the repository:
