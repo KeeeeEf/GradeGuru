@@ -9,7 +9,7 @@ Track and manage your academic grades with ease.
 - [Usage](#usage)
 
 ## About
-The GradeGuru is a web application designed to help students keep track of their academic performance. It provides a convenient way to organize course information, input grades, and calculate semester GPAs.
+GradeGuru is a web application designed to help students keep track of their academic performance. It provides a convenient way to organize course information, input grades, and calculate semester GPAs.
 
 ## Features
 - Add and view courses for each semester.
